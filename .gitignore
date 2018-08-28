@@ -102,3 +102,10 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# don't push data directory
+# there is a separate repo for it
+data
+
+# don't push builds, just run build.py
+builds

@@ -88,7 +88,7 @@ def main(directory_path):
             dirs_with_errors.append(run_dir_path)
 
   # Done processing
-  print "Number of dir with Errors = " + str(len(dirs_with_errors))
+  print("Number of dir with Errors = " + str(len(dirs_with_errors)))
   
   # Assert that runs are equal across algorithms
   aggregator.check_assertions()
@@ -112,6 +112,8 @@ class Aggregator:
     # Load json file and read in as dict
     with open(json_file_name) as json_file:
       self.properties = json.load(json_file)
+      if self.properties['nickname'] == '?':
+          print("wtf...", json_file_name)
 
     # determine which domain the run is associated with
     domain = self.get_property('domain')
@@ -194,7 +196,7 @@ class Aggregator:
     row_properties['domain'] = domain
     row_properties['alg'] = algorithm_id
 
-    for key, value in row_properties.iteritems():
+    for key, value in row_properties.items():
         # Need to create index for scalar values (so pd knows how many rows intended)
         row_properties[key] = [value]
 
@@ -209,12 +211,14 @@ class Aggregator:
   def print_domain_averages(self):
       '''Print domain averages aross all multi-run instances per algorithm'''
       # Print one Dataframe per domain
-      for domain, domain_df in self.stats_per_domain.iteritems():
+      for domain, domain_df in self.stats_per_domain.items():
         # Retrieve data frame run by a specific algorithm
         #print(domain_df)
 	# Create a new data frame that lists the number of runs each (domain, instance, alg) group ran
        	df_num_runs_per_group = pd.DataFrame({ 'num_runs': domain_df.groupby(['domain', 'instance', 'alg']).size() }).reset_index()
 
+        print(domain)
+        print(df_num_runs_per_group[df_num_runs_per_group['num_runs'] != 10])
         num_runs = df_num_runs_per_group['num_runs'][0]
         for idx in range(1, len(df_num_runs_per_group)):
             assert num_runs == df_num_runs_per_group['num_runs'][idx],  "Not an equal number of runs per (domain, instance, algorithm) tuple"
@@ -225,11 +229,11 @@ class Aggregator:
         # Prints the average per domain instance
         desired_df = domain_df[['domain', 'instance', 'alg', 'coverage']]
         #print desired_df.groupby(['domain', 'instance', 'alg']).mean()
-        print "---"
+        print("---")
 
         # Prints the average per domain
-        print desired_df.groupby(['domain', 'alg']).mean()
-        print "/\\/\\/\\/\\/\\/\\/\\"
+        print(desired_df.groupby(['domain', 'alg']).mean())
+        print("/\\/\\/\\/\\/\\/\\/\\")
 
         #for alg in set(domain_df['alg']):
         #  pass
@@ -239,7 +243,7 @@ class Aggregator:
     for domain in sorted(self.stats_per_domain):
       #if 'grid' in domain:
       if True:
-        print ''
+        print('')
         print(domain)
         for metric in sorted(Statistics.get_metrics()):
           arbitrary_key = self.stats_per_domain[domain].keys()[0]
@@ -253,8 +257,8 @@ class Aggregator:
           #sorted_algorithms.append('RRW_Luby_HFF')
           # ENd special block
 
-          print "-----"
-          print metric
+          print("-----")
+          print(metric)
           #print("{}{}{}{}".format(os.linesep, metric, DELIMETER, DELIMETER.join([str(x) for x in sorted_algorithms])))
           print("{}{}".format(os.linesep, DELIMETER.join([str(x) for x in sorted_algorithms])))
           sorted_instances = self.stats_per_domain[domain].keys()

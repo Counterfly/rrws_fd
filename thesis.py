@@ -100,7 +100,7 @@ class FastDownwardExperiment(object):
 
     self._pool.close()
     self._pool.join()  # Unncessary if doing the above for-loop (printing successful or not)
-    print "\n\n======\nFinished, Joined Pool"
+    print("\n\n======\nFinished, Joined Pool")
 
   def run_algorithm(self, algorithm, suite, store_path):
     '''Runs the specified algorithm on the entire suite, and stores the logs under store_path root'''
@@ -188,12 +188,12 @@ class FastDownwardExperiment(object):
           program.extend(args)
           #program.extend([">", log_file])
           program = [pipes.quote(x) for x in program]
-          print "program = %s" % ' '.join(program)
+          print("program = %s" % ' '.join(program))
           with open(log_file, "w") as file_log:
 	    #proc = Popen(program, shell=True, stdin=None, stdout=file_log, stderr=None, close_fds=True)
 	    #proc.wait()
             return_code = subprocess.call(" ".join(program), shell=True, stdout=file_log)
-          print "return code = ", return_code
+          print("return code = ", return_code)
           #subprocess.call(program)
 
 exp = FastDownwardExperiment()
